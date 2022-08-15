@@ -11,26 +11,26 @@ jobs:
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
-            creds: ${{ azure.AZURE_CREDENTIALS }}
+            creds: ${{ secrets.azure.AZURE_CREDENTIALS }}
         
         - name: 'Build and push image'
           uses: azure/docker-login@v1
           with:
-            login-server: ${{ azure.REGISTRY_LOGIN_SERVER }}
-            username: ${{ azure.REGISTRY_USERNAME }}
-            password: ${{ azure.REGISTRY_PASSWORD }}
+            login-server: ${{ secrets.azure.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.azure.REGISTRY_USERNAME }}
+            password: ${{ secrets.azure.REGISTRY_PASSWORD }}
         - run: |
-            docker build . -t ${{ azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
-            docker push ${{ azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            docker build . -t ${{ secrets.azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            docker push ${{ secrets.azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
         
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
-            resource-group: ${{ azure.RESOURCE_GROUP }}
-            dns-name-label: ${{ azure.RESOURCE_GROUP }}${{ github.run_number }}
-            image: ${{ azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
-            registry-login-server: ${{ azure.REGISTRY_LOGIN_SERVER }}
-            registry-username: ${{ azure.REGISTRY_USERNAME }}
-            registry-password: ${{ azure.REGISTRY_PASSWORD }}
+            resource-group: ${{ secrets.azure.RESOURCE_GROUP }}
+            dns-name-label: ${{ secrets.azure.RESOURCE_GROUP }}${{ github.run_number }}
+            image: ${{ secrets.azure.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            registry-login-server: ${{ secrets.azure.REGISTRY_LOGIN_SERVER }}
+            registry-username: ${{ secrets.azure.REGISTRY_USERNAME }}
+            registry-password: ${{ secrets.azure.REGISTRY_PASSWORD }}
             name: fastapi-sampleapp
             location: 'east us'
